@@ -1,4 +1,4 @@
-package com.cidade.inteligente.cidade_inteligente;
+package com.cidade.inteligente.cidade_inteligente.controller;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+
+import com.cidade.inteligente.cidade_inteligente.HelloApplication;
 
 public class HelloController extends Application {
     @Override
@@ -23,6 +25,3 @@ public class HelloController extends Application {
         launch();
     }
 }
-
-
-

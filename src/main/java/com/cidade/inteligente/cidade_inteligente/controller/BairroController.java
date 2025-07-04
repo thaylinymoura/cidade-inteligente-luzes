@@ -1,5 +1,6 @@
 package com.cidade.inteligente.cidade_inteligente.controller;
 
+import com.cidade.inteligente.cidade_inteligente.config.ConfiguracaoCSVReader;
 import com.cidade.inteligente.cidade_inteligente.decorator.LampadaComContador;
 import com.cidade.inteligente.cidade_inteligente.decorator.LampadaComDimmer;
 import com.cidade.inteligente.cidade_inteligente.decorator.LampadaDecorator; // Necessário para o método isPosteVaporSodio
@@ -28,7 +29,9 @@ import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -40,7 +43,7 @@ public class BairroController implements Initializable {
     private Map<String, PosteDeLuz> postesDoBairro;
     private Map<String, ImageView> imagensPostesUI;
 
-    //Botao para Luz Manual
+    // Botao para Luz Manual
     private Map<String, Button> botoesControleManual;
 
     // Imagens para os estados ligado/desligado de postes LED
@@ -51,16 +54,21 @@ public class BairroController implements Initializable {
     private Image imageOffVaporSodio;
     private Image imageOnVaporSodio;
 
+    private Map<String, String> configuracoesGlobais, configuracoesPostes;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.configuracoesGlobais = ConfiguracaoCSVReader.lerConfiguracoes("ConfigLimiar.csv");
+        this.configuracoesPostes = ConfiguracaoCSVReader.lerConfiguracoes("ConfigPostes.csv");
+
         postesDoBairro = new HashMap<>();
         imagensPostesUI = new HashMap<>();
         this.botoesControleManual = new HashMap<>(); // Inicialização!
 
         // Carregar as imagens
         imageOffLED = new Image(getClass().getResourceAsStream("/images/Poste_de_Luz-removebg-preview.png"));
-        imageOnLED = new Image(getClass().getResourceAsStream("/images/ChatGPT_Image_18_de_jun._de_2025__22_37_42-removebg-preview.png"));
+        imageOnLED = new Image(getClass()
+                .getResourceAsStream("/images/ChatGPT_Image_18_de_jun._de_2025__22_37_42-removebg-preview.png"));
 
         imageOffVaporSodio = imageOffLED; // Usando a mesma imagem de poste desligado para vapor de sódio
         imageOnVaporSodio = new Image(getClass().getResourceAsStream("/images/Luz_Post_Laranja-removebg-preview.png"));
@@ -68,35 +76,66 @@ public class BairroController implements Initializable {
         gridBairro.getChildren().clear();
 
         // IDs dos postes para uma grade 3x3
-        String[] idsPostes = {
-                "P-R1C1", "P-R1C2", "P-R1C3",
-                "P-R2C1", "P-R2C2", "P-R2C3",
-                "P-R3C1", "P-R3C2", "P-R3C3"
-        };
+        int maxRow = 3;
+        int maxCol = 3;
+
+        // String[] idsPostes = {
+        // "P-R1C1", "P-R1C2", "P-R1C3",
+        // "P-R2C1", "P-R2C2", "P-R2C3",
+        // "P-R3C1", "P-R3C2", "P-R3C3"
+        // };
         int posteCounter = 0;
         Random rand = new Random();
 
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                String posteId = idsPostes[posteCounter++];
+        int pointerPoste = 0;
+        for (int row = 0; row < maxRow; row++) {
+            for (int col = 0; col < maxCol; col++) {
+                // List<String> posteIDs = new ArrayList<>(configuracoesPostes.keySet());
+                // String[] posteKeys = configuracoesPostes.keySet().toArray(new String[0]);
+                String[] posteIDs = configuracoesPostes.keySet().stream()
+                        .filter(key -> !key.equals("id_poste"))
+                        .toArray(String[]::new);
+
+                String posteId = posteIDs[pointerPoste];
+                pointerPoste++;
+                String posteTipo = configuracoesPostes.get(posteId);
 
                 FabricaPoste fabrica;
                 ComportamentoLigamento estrategiaInicial;
                 boolean isVaporSodioPoste = false;
 
                 // Lógica para alternar tipos de postes e estratégias
-                int tipoPosteRandom = rand.nextInt(3); // 0: LED Hora, 1: VaporSodio Manual, 2: LED Luminosidade
+                // // 0: LED Hora, 1: VaporSodio Manual, 2: LED
 
-                if (tipoPosteRandom == 0) {
+                // String tipoPosteRandom = posteTipo;
+
+                if (posteTipo.equals("0")) {
                     fabrica = new FabricaPosteLED();
                     estrategiaInicial = new EstrategiaPorHorario(18, 6);
-                } else if (tipoPosteRandom == 1) {
+                } else if (posteTipo.equals("1")) {
                     fabrica = new FabricaPosteVaporSodio();
                     estrategiaInicial = new EstrategiaManual();
                     isVaporSodioPoste = true;
                 } else {
+                    String limiarLuminosidadeStr = configuracoesGlobais.get("limiar_luminosidade");
+                    double limiarLuminosidade = 0.0;
+
+                    if (limiarLuminosidadeStr != null) {
+                        try {
+                            limiarLuminosidade = Double.parseDouble(limiarLuminosidadeStr);
+                        } catch (NumberFormatException e) {
+                            System.err.println(
+                                    "Erro ao converter 'limiar_luminosidade' para double. Usando valor padrão.");
+                            limiarLuminosidade = 150.0;
+                        }
+                    } else {
+                        System.err.println(
+                                "Chave 'limiar_luminosidade' não encontrada no arquivo de configuração. Usando valor padrão.");
+                        limiarLuminosidade = 150.0;
+                    }
+
                     fabrica = new FabricaPosteLED(); // FabricaLED para postes inteligentes
-                    estrategiaInicial = new EstrategiaPorLuminosidade(rand.nextDouble() * 100 + 30);
+                    estrategiaInicial = new EstrategiaPorLuminosidade(limiarLuminosidade);
                 }
 
                 // Cria componentes base
@@ -113,12 +152,16 @@ public class BairroController implements Initializable {
                     lampadaDecorada = new LampadaComContador(lampadaDecorada);
                 }
 
-                // Cria o PosteDeLuz, ajustando o sensor se a estratégia for por luminosidade e o sensor original não for Luminosidade
+                // Cria o PosteDeLuz, ajustando o sensor se a estratégia for por luminosidade e
+                // o sensor original não for Luminosidade
                 PosteDeLuz novoPoste;
-                if (estrategiaInicial instanceof EstrategiaPorLuminosidade && !(sensorDoPoste instanceof SensorLuminosidade)) {
-                    novoPoste = new PosteDeLuz(posteId, lampadaDecorada, new SensorLuminosidade(), moduloDoPoste, estrategiaInicial);
+                if (estrategiaInicial instanceof EstrategiaPorLuminosidade
+                        && !(sensorDoPoste instanceof SensorLuminosidade)) {
+                    novoPoste = new PosteDeLuz(posteId, lampadaDecorada, new SensorLuminosidade(), moduloDoPoste,
+                            estrategiaInicial);
                 } else {
-                    novoPoste = new PosteDeLuz(posteId, lampadaDecorada, sensorDoPoste, moduloDoPoste, estrategiaInicial);
+                    novoPoste = new PosteDeLuz(posteId, lampadaDecorada, sensorDoPoste, moduloDoPoste,
+                            estrategiaInicial);
                 }
 
                 postesDoBairro.put(posteId, novoPoste);
@@ -147,7 +190,8 @@ public class BairroController implements Initializable {
                 novoPoste.adicionarObservador(centroMonitoramento);
 
                 // Label de informação do poste
-                Label infoLabel = new Label(posteId + "\n(" + estrategiaInicial.getClass().getSimpleName().replace("Estrategia", "") + ")");
+                Label infoLabel = new Label(
+                        posteId + "\n(" + estrategiaInicial.getClass().getSimpleName().replace("Estrategia", "") + ")");
                 infoLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #333; -fx-alignment: center;");
                 GridPane.setHalignment(infoLabel, HPos.CENTER);
                 GridPane.setValignment(infoLabel, VPos.BOTTOM);
@@ -172,15 +216,16 @@ public class BairroController implements Initializable {
 
                     posteUIGroup.getChildren().add(controleButton); // Adiciona o botão ao VBox
                 } else {
-                    // Para postes automáticos, pode-se adicionar um Label indicando "Automático" ou similar
-                    Label autoLabel = new Label("Auto (" + estrategiaInicial.getClass().getSimpleName().replace("Estrategia", "") + ")");
+                    // Para postes automáticos, pode-se adicionar um Label indicando "Automático" ou
+                    // similar
+                    Label autoLabel = new Label(
+                            "Auto (" + estrategiaInicial.getClass().getSimpleName().replace("Estrategia", "") + ")");
                     autoLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #666; -fx-alignment: center;");
                     posteUIGroup.getChildren().add(autoLabel);
                 }
 
                 // Adiciona o VBox completo (com imagem, label e talvez botão) ao GridPane
                 gridBairro.add(posteUIGroup, col, row);
-
 
                 // Evento de clique para controle manual ou mudança de estratégia
                 posteImageView.setOnMouseClicked(event -> {
@@ -191,9 +236,11 @@ public class BairroController implements Initializable {
                             novoPoste.ligar();
                         }
                     } else {
-                        System.out.println("Poste " + novoPoste.getId() + " está em modo automático (" + novoPoste.getComportamento().getClass().getSimpleName() + "). Mudar para manual?");
+                        System.out.println("Poste " + novoPoste.getId() + " está em modo automático ("
+                                + novoPoste.getComportamento().getClass().getSimpleName() + "). Mudar para manual?");
                         novoPoste.setComportamentoLigamento(new EstrategiaManual());
-                        System.out.println("Estratégia do Poste " + novoPoste.getId() + " mudou para Manual. Clique novamente na imagem para ligar/desligar.");
+                        System.out.println("Estratégia do Poste " + novoPoste.getId()
+                                + " mudou para Manual. Clique novamente na imagem para ligar/desligar.");
                     }
                 });
             }
@@ -258,6 +305,5 @@ public class BairroController implements Initializable {
         gridBairro.getChildren().clear();
         initialize(null, null); // Reinicializa o controlador e recria tudo
     }
-
 
 }

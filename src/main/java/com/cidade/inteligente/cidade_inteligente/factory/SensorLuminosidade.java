@@ -1,6 +1,6 @@
 package com.cidade.inteligente.cidade_inteligente.factory;
 
-public class SensorLuminosidade  implements  Sensor{
+public class SensorLuminosidade implements Sensor {
     @Override
     public boolean detectarMovimento() {
         return false; // Não detecta movimento
@@ -12,4 +12,3 @@ public class SensorLuminosidade  implements  Sensor{
         return Math.random() * 500;
     }
 }
-

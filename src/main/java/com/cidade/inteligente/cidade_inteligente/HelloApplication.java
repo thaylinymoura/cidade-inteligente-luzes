@@ -6,8 +6,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class HelloApplication extends Application {
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("cidade-view.fxml"));
@@ -17,7 +19,6 @@ public class HelloApplication extends Application {
         stage.setResizable(false);
         stage.show();
     }
-
 
     public static void abrirTela() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("bairro-view.fxml"));
