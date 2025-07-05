@@ -1,5 +1,11 @@
 # Projeto Cidade Inteligente: Sistema de Iluminação Pública Inteligente
 
+**Disciplina:** Programação Orientada a Objeto 
+
+## Aluna:
+* [Thayliny Alves de Moura]
+* [Guilherme Santiago]
+
 ## Visão Geral
 
 Este projeto é uma simulação de um sistema de iluminação pública inteligente, desenvolvido como parte da disciplina de Programação Orientada a Objetos. O foco principal é a sustentabilidade, otimizando o consumo de energia por meio de diferentes estratégias de funcionamento dos postes de luz. A aplicação demonstra a aplicação de conceitos fundamentais de Orientação a Objetos e Padrões de Projeto GoF em um cenário prático.
