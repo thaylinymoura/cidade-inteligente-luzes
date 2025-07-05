@@ -11,12 +11,12 @@ public class FabricaPosteVaporSodio  implements  FabricaPoste{
 
     @Override
     public Sensor criarSensor() {
-        return null; // Poste simples, sem sensor
+        return null;
     }
 
     @Override
     public ModuloComunicacao criarModuloComunicacao() {
-        return null; // Poste simples, sem módulo de comunicação
+        return null;
     }
 
 }

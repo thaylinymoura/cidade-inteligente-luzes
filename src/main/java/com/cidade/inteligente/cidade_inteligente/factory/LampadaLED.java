@@ -13,7 +13,7 @@ public class LampadaLED implements  Lampada{
 
     @Override
     public double getConsumoEnergia() {
-        return 15.0; // 15W
+        return 15.0;
     }
 }
 

@@ -34,7 +34,7 @@ public class PosteDeLuz implements SujeitoPoste {
         System.out.println("Poste de Luz '" + id + "' criado com estratégia: " + comportamentoInicial.getClass().getSimpleName());
     }
 
-    // Estes são os métodos que o HelloController espera encontrar.
+
     public void ligar() {
         if (!this.ligado) {
             this.ligado = true;
@@ -68,7 +68,7 @@ public class PosteDeLuz implements SujeitoPoste {
         return id;
     }
 
-// NOVOS GETTERS para os componentes do poste
+
     public Lampada getLampada() {
         return lampada;
     }
@@ -95,7 +95,7 @@ public class PosteDeLuz implements SujeitoPoste {
 
     public void executarComportamento() {
         if (comportamento != null) {
-            comportamento.avaliar(this); // Delega a decisão de ligar/desligar para a estratégia
+            comportamento.avaliar(this);
         }
     }
 
