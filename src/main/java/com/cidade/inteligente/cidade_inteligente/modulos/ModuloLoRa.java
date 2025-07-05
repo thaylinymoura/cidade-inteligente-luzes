@@ -1,4 +1,4 @@
-package com.cidade.inteligente.cidade_inteligente.factory;
+package com.cidade.inteligente.cidade_inteligente.modulos;
 
 public class ModuloLoRa implements ModuloComunicacao{
     @Override

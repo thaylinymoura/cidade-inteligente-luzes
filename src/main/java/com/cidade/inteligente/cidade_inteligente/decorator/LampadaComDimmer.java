@@ -2,11 +2,11 @@ package com.cidade.inteligente.cidade_inteligente.decorator;
 import com.cidade.inteligente.cidade_inteligente.factory.Lampada;
 
 public class LampadaComDimmer extends LampadaDecorator{
-    private int intensidade; // 0-100%
+    private int intensidade;
 
     public LampadaComDimmer(Lampada lampadaDecorada) {
         super(lampadaDecorada);
-        this.intensidade = 100; // Começa com intensidade total
+        this.intensidade = 100;
     }
 
     public void setIntensidade(int intensidade) {
@@ -24,14 +24,13 @@ public class LampadaComDimmer extends LampadaDecorator{
 
     @Override
     public void ligar() {
-        super.ligar(); // Chama o ligar da lâmpada decorada
+        super.ligar();
         System.out.println("Lâmpada ligada com intensidade de " + intensidade + "%.");
     }
 
     @Override
     public double getConsumoEnergia() {
-        // O consumo de energia pode variar com a intensidade
-        // Exemplo: consumo proporcional à intensidade
+
         return super.getConsumoEnergia() * (intensidade / 100.0);
     }
 

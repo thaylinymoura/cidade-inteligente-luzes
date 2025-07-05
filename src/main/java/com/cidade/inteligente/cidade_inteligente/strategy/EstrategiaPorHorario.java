@@ -1,10 +1,8 @@
 package com.cidade.inteligente.cidade_inteligente.strategy;
 
-import com.cidade.inteligente.cidade_inteligente.config.ConfiguracaoCSVReader;
 import com.cidade.inteligente.cidade_inteligente.model.PosteDeLuz;
 
 import java.time.LocalTime;
-import java.util.Map;
 
 public class EstrategiaPorHorario implements ComportamentoLigamento {
     private int horaLigamento;
@@ -18,11 +16,7 @@ public class EstrategiaPorHorario implements ComportamentoLigamento {
     @Override
     public void avaliar(PosteDeLuz poste) {
         LocalTime horaAtual = LocalTime.now();
-        int hora = horaAtual.getHour(); // Obtém a hora atual (0-23)
-
-        // Lógica: ligar entre horaLigamento e horaDesligamento (ex: 18h e 6h do dia
-        // seguinte)
-        // Considera o cenário noturno que passa pela meia-noite
+        int hora = horaAtual.getHour();
         boolean deveEstarLigado = (hora >= horaLigamento || hora < horaDesligamento);
 
         if (deveEstarLigado && !poste.isLigado()) {

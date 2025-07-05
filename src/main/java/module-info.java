@@ -30,5 +30,7 @@ module com.cidade.inteligente.cidade_inteligente {
     exports com.cidade.inteligente.cidade_inteligente.decorator;
 
     opens com.cidade.inteligente.cidade_inteligente.decorator to javafx.fxml;
+    exports com.cidade.inteligente.cidade_inteligente.modulos;
+    opens com.cidade.inteligente.cidade_inteligente.modulos to javafx.fxml;
 
 }

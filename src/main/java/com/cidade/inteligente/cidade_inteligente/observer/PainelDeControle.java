@@ -7,7 +7,6 @@ public class PainelDeControle implements  AtualizadorPoste {
     public void atualizar(PosteDeLuz poste) {
         System.out.println("[Painel de Controle] Poste '" + poste.getId() + "' estado: " +
                 (poste.isLigado() ? "LIGADO" : "DESLIGADO"));
-        // Lógica para atualizar a interface gráfica do painel (ex: um Label, TextArea)
-        // Por enquanto, apenas imprime no console para demonstração.
+
     }
 }

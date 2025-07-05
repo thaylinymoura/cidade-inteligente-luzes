@@ -1,6 +1,7 @@
 package com.cidade.inteligente.cidade_inteligente.controller;
 
-import com.cidade.inteligente.cidade_inteligente.HelloApplication;
+import com.cidade.inteligente.cidade_inteligente.Application;
+import com.cidade.inteligente.cidade_inteligente.config.ConfiguracaoLuzes;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -32,6 +34,8 @@ public class CidadeController implements Initializable {
     @FXML
     private Button btn_ligarLuzes;
 
+    private Map<String, String> horarios;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         init();
@@ -41,14 +45,25 @@ public class CidadeController implements Initializable {
 
         setOnAction();
         setImagensDefault();
+        carregarInfos();
+    }
 
-        text_luzes_ligadas.setText("0");
-        text_luzes_desligadas.setText("10.555");
-        text_alertas.setText("0");
+    private void carregarInfos() {
+        horarios = ConfiguracaoLuzes.carregarHorarios();
+
+        horarios.forEach((chave, valor) -> {
+            if (chave.equals(" luzes.ligadas")) {
+                text_luzes_ligadas.setText(valor);
+            } else if (chave.equals("luzes.desligadas")) {
+                text_luzes_desligadas.setText(valor);
+            } else if (chave.equals("luzes.alertas")) {
+                text_alertas.setText(valor);
+            }
+        });
     }
 
     private void setImagensDefault() {
-        Image imageOffLED = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Poste_de_Luz-removebg-preview.png")));
+        Image imageOffLED = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/posteDesligado.png")));
 
         img_01.setFitHeight(55);
         img_01.setFitWidth(38);
@@ -57,7 +72,7 @@ public class CidadeController implements Initializable {
 
     private void ligarLuz(String idLuz) {
 
-        Image imageOnLED = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Luz_Post_Laranja-removebg-preview.png")));
+        Image imageOnLED = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/posteLigado.png")));
 
 
         if (idLuz.equals(img_01.getId())) {
@@ -74,7 +89,7 @@ public class CidadeController implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
                 try{
-                    HelloApplication.abrirTela();
+                    Application.abrirTela();
 
                 }catch (Exception exception){
                     exception.printStackTrace();

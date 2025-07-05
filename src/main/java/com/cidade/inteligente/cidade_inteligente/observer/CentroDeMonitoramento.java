@@ -8,8 +8,7 @@ public class CentroDeMonitoramento implements  AtualizadorPoste {
     public void atualizar(PosteDeLuz poste) {
         System.out.println("[Centro de Monitoramento] Registrando evento para Poste '" +
                 poste.getId() + "': " + (poste.isLigado() ? "Ligou" : "Desligou"));
-        // Lógica para registrar em log ou banco de dados
-        // Por enquanto, apenas imprime no console para demonstração.
+
 }
 
 }

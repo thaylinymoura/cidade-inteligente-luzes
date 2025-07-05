@@ -1,5 +1,7 @@
 package com.cidade.inteligente.cidade_inteligente.factory;
 
+import com.cidade.inteligente.cidade_inteligente.modulos.ModuloComunicacao;
+
 public class FabricaPosteVaporSodio  implements  FabricaPoste{
 
     @Override

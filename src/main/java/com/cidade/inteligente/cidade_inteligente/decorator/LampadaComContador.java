@@ -13,14 +13,14 @@ public class LampadaComContador extends LampadaDecorator{
 
     @Override
     public void ligar() {
-        super.ligar(); // Chama o ligar da lâmpada decorada
-        ciclosLigadoDesligado++; // Incrementa o contador
+        super.ligar();
+        ciclosLigadoDesligado++;
         System.out.println("Lâmpada ligada. Ciclos: " + ciclosLigadoDesligado);
     }
 
     @Override
     public void desligar() {
-        super.desligar(); // Chama o desligar da lâmpada decorada
+        super.desligar();
         System.out.println("Lâmpada desligada.");
     }
 
